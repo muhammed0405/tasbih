@@ -16,7 +16,7 @@ export default function Register() {
 			navigate("/verify-email")
 		} catch (error) {
 			console.log("error", error)
-		}
+		}	
 		console.log("data", data)
 	}
 
