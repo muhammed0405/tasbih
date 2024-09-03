@@ -2,14 +2,14 @@
 
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit"
 import axiosInstance, { setAuthToken, handleApiError } from "./axiosAuthUtils"
-interface User {
+export interface User {
 	id: string
 	email: string
 	username: string
 	emailVerified: boolean
 }
 
-interface AuthState {
+export interface AuthState {
 	user: User | null
 	isAuthenticated: boolean
 	loading: boolean
@@ -42,13 +42,14 @@ export const login = createAsyncThunk(
 
 			return response.data.record as User
 		} catch (error) {
+			console.log("password", password)
 			return rejectWithValue(handleApiError(error))
 		}
 	}
 )
 
-export const signup = createAsyncThunk(
-	"auth/signup",
+export const signUp = createAsyncThunk(
+	"auth/signUp",
 	async (
 		{
 			email,
@@ -190,17 +191,17 @@ const authSlice = createSlice({
 				state.loading = false
 				state.error = action.payload as string
 			})
-			.addCase(signup.pending, state => {
+			.addCase(signUp.pending, state => {
 				state.loading = true
 				state.error = null
 			})
-			.addCase(signup.fulfilled, (state, action: PayloadAction<User>) => {
+			.addCase(signUp.fulfilled, (state, action: PayloadAction<User>) => {
 				state.user = action.payload
 				state.isAuthenticated = false // User needs to verify email
 				state.loading = false
 				state.error = null
 			})
-			.addCase(signup.rejected, (state, action) => {
+			.addCase(signUp.rejected, (state, action) => {
 				state.loading = false
 				state.error = action.payload as string
 			})

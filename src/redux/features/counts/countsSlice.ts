@@ -2,6 +2,8 @@
 
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
 import pb from "../../../services/pocketbase"
+import axiosInstance from "../auth/axiosAuthUtils"
+import { User } from "../auth/authSlice"
 
 export const fetchCounts = createAsyncThunk(
 	"counts/fetchCounts",
@@ -13,16 +15,39 @@ export const fetchCounts = createAsyncThunk(
 	}
 )
 
-export const addCount = createAsyncThunk(
-	"counts/addCount",
-	async ({ type, count }: { type: string; count: number }) => {
-		const record = await pb.collection("counts").create({
-			user: pb.authStore.model.id,
-			type,
-			count,
-			date: new Date().toISOString(),
-		})
-		return record
+export const login = createAsyncThunk(
+	"auth/login",
+	async (
+		{
+			user,
+			zikr_type,
+			last_count,
+			last_step,
+		}: {
+			user: string
+			zikr_type: string
+			last_count: number
+			last_step: number
+		},
+		{ rejectWithValue }
+	) => {
+		try {
+			const data = {
+				user, // RELATION_RECORD_ID
+				zikr_type, // RELATION_RECORD_ID
+				last_count, // e.g., 123
+				last_step, // e.g., 123
+			}
+
+			const response = await axiosInstance.post(
+				"/api/collections/counts/records",
+				data
+			)
+			return response.data.items
+		} catch (error) {
+			console.log("Error details:", error)
+			return rejectWithValue(handleApiError(error))
+		}
 	}
 )
 

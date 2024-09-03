@@ -1,44 +1,55 @@
 /** @format */
 
-import { NavLink, useNavigate } from "react-router-dom"
+import { NavLink } from "react-router-dom"
 import useSignOut from "react-auth-kit/hooks/useSignOut"
 import useIsAuthenticated from "react-auth-kit/hooks/useIsAuthenticated"
+import { PiSignOutBold } from "react-icons/pi"
+import { MdHome } from "react-icons/md"
+import { FaList } from "react-icons/fa"
+import { useState } from "react"
+import AskToLogOut from "./AskToLogOut"
+
 export default function Header() {
+	// This returns a boolean, not a function
 	const isAuthenticated = useIsAuthenticated()
+	const [logOut, setLogOut] = useState(false)
 	const signOut = useSignOut()
-	const navigate = useNavigate()
 
 	return (
 		<header>
-			<div className="header__logo py-4">
-				<img src="https://reactjs.org/logo.svg" alt="" />
-			</div>
-			<nav className="flex justify-center items-center gap-4 ">
-				<NavLink to={"/"}>Home</NavLink>
-				<NavLink to={"/dashboard"}>Dashboard</NavLink>
-				{isAuthenticated ? (
-					<button
-						className="py-2 px-4 border-2 border-sky-500 rounded-md  text-center text-blue-500"
-						onClick={() => {
-							try {
-								signOut()
-								navigate("/login")
-							} catch (error) {
-								console.log(error)
-							}
-						}}
-					>
-						SignOut
+			<nav className="flex justify-center items-center gap-4 h-40">
+				<NavLink to="/">
+					<button className="py-2 px-4 border-2 border-sky-500 rounded-md text-center text-blue-500">
+						<MdHome />
 					</button>
+				</NavLink>
+				<NavLink to="/dashboard">
+					<button className="py-2 px-4 border-2 border-sky-500 rounded-md text-center text-blue-500">
+						<FaList />
+					</button>
+				</NavLink>
+				{isAuthenticated ? (
+					<>
+						<button
+							className="py-2 px-4 border-2 border-sky-500 rounded-md text-center text-blue-500"
+							onClick={() => {
+								setLogOut(!logOut)
+							}}
+						>
+							<PiSignOutBold />
+						</button>
+
+						{logOut && <AskToLogOut setLogOut={setLogOut} signOut={signOut} />}
+					</>
 				) : (
 					<>
-						<NavLink to={"/login"}>
-							<button className="py-2 px-4 border-2 border-sky-500 rounded-md  text-center text-blue-500">
+						<NavLink to="/login">
+							<button className="py-2 px-4 border-2 border-sky-500 rounded-md text-center text-blue-500">
 								Login
-							</button>{" "}
+							</button>
 						</NavLink>
-						<NavLink to={"/register"}>
-							<button className="py-2 px-4 border-2 border-sky-500 rounded-md  text-center text-blue-500">
+						<NavLink to="/register">
+							<button className="py-2 px-4 border-2 border-sky-500 rounded-md text-center text-blue-500">
 								Register
 							</button>
 						</NavLink>

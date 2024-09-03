@@ -1,22 +1,36 @@
 /** @format */
 
 import { useForm } from "react-hook-form"
-import { signup } from "../../../redux/features/auth/authSlice"
+import { signUp } from "../../../redux/features/auth/authSlice"
 import { useDispatch } from "react-redux"
 import { useNavigate } from "react-router-dom"
+import { useState } from "react"
+import { MdOutlinePassword } from "react-icons/md"
 
 export default function Register() {
 	const dispatch = useDispatch()
 	const { register, handleSubmit } = useForm()
 	const navigate = useNavigate()
-	const onSubmit = async data => {
+	const [showPassword, setShowPassword] = useState(false)
+
+	const onSubmit = async (data: {
+		email: string
+		username: string
+		password: string
+	}) => {
 		try {
-			dispatch(signup(data))
+			dispatch(
+				signUp({
+					email: data.email,
+					username: data.username,
+					password: data.password,
+				})
+			)
 			localStorage.setItem("email", data.email)
 			navigate("/verify-email")
 		} catch (error) {
 			console.log("error", error)
-		}	
+		}
 		console.log("data", data)
 	}
 
@@ -50,16 +64,23 @@ export default function Register() {
 						placeholder="Enter your username"
 					/>
 				</div>
-				<div className="flex flex-col gap-2 text-white font-semibold">
+				<div className="flex flex-col gap-2 text-white font-semibold relative">
 					<label htmlFor="password">password</label>
 					<input
 						required
 						{...register("password")}
 						className="authInputs text-blue-500 p-2 rounded-sm"
-						type="password"
+						type={showPassword ? "text" : "password"}
 						id="password"
 						placeholder="Enter your password"
 					/>
+					<button
+						type="button"
+						className=" cursor-pointer absolute right-4 top-[70%]	text-black -translate-y-1/2"
+						onClick={() => setShowPassword(!showPassword)}
+					>
+						<MdOutlinePassword />
+					</button>
 				</div>
 
 				<button

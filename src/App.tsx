@@ -1,5 +1,5 @@
 /** @format */
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import { Routes, Route } from "react-router-dom"
 import Home from "./pages/Home/"
 import Dashboard from "./pages/Dashboard"
@@ -12,14 +12,35 @@ import VerifyEmail from "./pages/Auth/VerifyEmail"
 import ResetPassword from "./pages/Auth/ResetPassword"
 import ForgotPassword from "./pages/Auth/ForgotPassword/ForgotPassword"
 import ProtectedAuthRoute from "./components/ProtectedRoutes/ProtectedRoute"
+import { MdModeNight } from "react-icons/md"
+import { FaSun } from "react-icons/fa"
 const App: React.FC = () => {
+	const [bgColor, setBgColor] = useState("white")
+	document.body.setAttribute("style", `background: ${bgColor}`)
+
 	return (
 		<div className="App">
-			<Header />
+			<div className="flex  justify-center gap-4 items-center flex-wrap">
+				<Header />
+				<button
+					className="py-2  px-4 border-2 border-sky-500 rounded-md  text-center text-blue-500"
+					onClick={() => setBgColor(bgColor === "white" ? "#343434" : "white")}
+				>
+					{bgColor === "white" ? (
+						<>
+							<MdModeNight />
+						</>
+					) : (
+						<>
+							<FaSun />
+						</>
+					)}
+				</button>
+			</div>
 			<div className="container">
 				<Routes>
 					<Route element={<AuthOutlet fallbackPath="/login" />}>
-						<Route path="/" element={<Home />} />
+						<Route path="/" element={<Home bgColor={bgColor} />} />
 						<Route path="/dashboard" element={<Dashboard />} />
 					</Route>
 
@@ -27,10 +48,10 @@ const App: React.FC = () => {
 						<Route path="/login" element={<Login />} />
 						<Route path="/register" element={<Register />} />
 						<Route path="/forgot-password" element={<ForgotPassword />} />
+						<Route path="/verify-email" element={<VerifyEmail />} />
 					</Route>
 
 					<Route path="/reset-password" element={<ResetPassword />} />
-					<Route path="/verify-email" element={<VerifyEmail />} />
 				</Routes>
 			</div>
 		</div>
