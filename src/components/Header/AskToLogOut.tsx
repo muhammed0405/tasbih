@@ -2,20 +2,39 @@
 
 import { useNavigate } from "react-router-dom"
 
+// Warm color palette
+const colors = {
+	primary: "#e67e22", // Orange
+	secondary: "#f39c12", // Amber
+	accent: "#d35400", // Dark Orange
+	text: "#34495e", // Dark Blue-Gray
+	background: "#fff", // White
+	danger: "#c0392b", // Dark Red
+	success: "#27ae60", // Green
+}
+
 export default function AskToLogOut({ setLogOut, signOut }) {
 	const navigate = useNavigate()
 	return (
-		<div className="absolute w-full h-full rounded-2xl bg-blue-500 z-10 flex flex-col items-center justify-center gap-10">
-			<h2 className="text-2xl text-white">Are you sure you want to logout?</h2>
-
+		<div
+			className="absolute w-full h-full rounded-2xl flex flex-col items-center justify-center gap-10"
+			style={{ backgroundColor: colors.primary }}
+		>
+			<h2 className="text-2xl" style={{ color: colors.background }}>
+				Are you sure you want to logout?
+			</h2>
 			<div className="flex justify-around w-full ">
 				<button
-					className="text-[#FF5733] border-4 p-3 rounded-lg border-red-500"
+					className="p-3 rounded-lg"
+					style={{
+						color: colors.danger,
+						borderColor: colors.danger,
+						borderWidth: 4,
+					}}
 					onClick={() => {
 						try {
 							signOut()
 							setLogOut(false)
-
 							navigate("/login")
 						} catch (err) {
 							console.log(err)
@@ -25,7 +44,12 @@ export default function AskToLogOut({ setLogOut, signOut }) {
 					Yes
 				</button>
 				<button
-					className="text-green-500 border-4 p-3 rounded-lg border-green-500"
+					className="p-3 rounded-lg"
+					style={{
+						color: colors.success,
+						borderColor: colors.success,
+						borderWidth: 4,
+					}}
 					onClick={() => setLogOut(false)}
 				>
 					No

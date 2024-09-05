@@ -31,13 +31,16 @@ export const login = createAsyncThunk(
 				"/api/collections/users/auth-with-password",
 				{ identity, password }
 			)
-
+			console.log("response", response)
 			signIn({
 				auth: {
 					token: response.data.token,
 					type: "Bearer",
 				},
-				userState: { email: identity },
+				userState: {
+					email: identity,
+					userId: response.data.record.id,
+				},
 			})
 
 			return response.data.record as User

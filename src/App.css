@@ -15,6 +15,7 @@ body {
 }
 
 * {
+	/* outline: 2px solid green; */
 	padding: 0;
 	box-sizing: border-box;
 }

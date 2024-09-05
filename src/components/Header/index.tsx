@@ -9,47 +9,71 @@ import { FaList } from "react-icons/fa"
 import { useState } from "react"
 import AskToLogOut from "./AskToLogOut"
 
+// Warm color palette
+const colors = {
+	primary: "#e67e22", // Orange
+	secondary: "#f39c12", // Amber
+	accent: "#d35400", // Dark Orange
+	text: "#34495e", // Dark Blue-Gray
+	background: "#fff", // White
+}
+
 export default function Header() {
-	// This returns a boolean, not a function
 	const isAuthenticated = useIsAuthenticated()
 	const [logOut, setLogOut] = useState(false)
 	const signOut = useSignOut()
 
+	const buttonStyle = {
+		borderColor: colors.primary,
+		color: colors.primary,
+		backgroundColor: colors.background,
+	}
+
 	return (
 		<header>
-			<nav className="flex justify-center items-center gap-4 h-40">
+			<nav className="flex justify-center items-center gap-4 h-16">
 				<NavLink to="/">
-					<button className="py-2 px-4 border-2 border-sky-500 rounded-md text-center text-blue-500">
+					<button
+						className="py-2 px-4 border-2 rounded-md text-center"
+						style={buttonStyle}
+					>
 						<MdHome />
 					</button>
 				</NavLink>
 				<NavLink to="/dashboard">
-					<button className="py-2 px-4 border-2 border-sky-500 rounded-md text-center text-blue-500">
+					<button
+						className="py-2 px-4 border-2 rounded-md text-center"
+						style={buttonStyle}
+					>
 						<FaList />
 					</button>
 				</NavLink>
 				{isAuthenticated ? (
 					<>
 						<button
-							className="py-2 px-4 border-2 border-sky-500 rounded-md text-center text-blue-500"
-							onClick={() => {
-								setLogOut(!logOut)
-							}}
+							className="py-2 px-4 border-2 rounded-md text-center"
+							style={buttonStyle}
+							onClick={() => setLogOut(!logOut)}
 						>
 							<PiSignOutBold />
 						</button>
-
 						{logOut && <AskToLogOut setLogOut={setLogOut} signOut={signOut} />}
 					</>
 				) : (
 					<>
 						<NavLink to="/login">
-							<button className="py-2 px-4 border-2 border-sky-500 rounded-md text-center text-blue-500">
+							<button
+								className="py-2 px-4 border-2 rounded-md text-center"
+								style={buttonStyle}
+							>
 								Login
 							</button>
 						</NavLink>
 						<NavLink to="/register">
-							<button className="py-2 px-4 border-2 border-sky-500 rounded-md text-center text-blue-500">
+							<button
+								className="py-2 px-4 border-2 rounded-md text-center"
+								style={buttonStyle}
+							>
 								Register
 							</button>
 						</NavLink>

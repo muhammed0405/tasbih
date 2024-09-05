@@ -1,9 +1,11 @@
 /** @format */
 
+import PocketBase from "pocketbase"
+/** @format */
+
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
-import pb from "../../../services/pocketbase"
+// import pb from "../../../services/pocketbase"
 import axiosInstance from "../auth/axiosAuthUtils"
-import { User } from "../auth/authSlice"
 
 export const fetchCounts = createAsyncThunk(
 	"counts/fetchCounts",
@@ -15,38 +17,54 @@ export const fetchCounts = createAsyncThunk(
 	}
 )
 
-export const login = createAsyncThunk(
-	"auth/login",
+export const addCount = createAsyncThunk(
+	"counts/createCount",
 	async (
 		{
 			user,
-			zikr_type,
+			name_of_tasbih,
 			last_count,
 			last_step,
+			currentCountID,
 		}: {
 			user: string
-			zikr_type: string
+			name_of_tasbih: string
 			last_count: number
 			last_step: number
+			currentCountID: string
 		},
 		{ rejectWithValue }
 	) => {
 		try {
+			const pb = new PocketBase(import.meta.env.VITE_PB_URL)
+
+			// Fetch the existing record
+			const isRecordExist = await pb.collection("counts").getList(1, 50, {
+				filter: `id="${currentCountID}"`,
+			})
+
 			const data = {
 				user, // RELATION_RECORD_ID
-				zikr_type, // RELATION_RECORD_ID
+				name_of_tasbih, // e.g., salavat
 				last_count, // e.g., 123
 				last_step, // e.g., 123
 			}
 
-			const response = await axiosInstance.post(
-				"/api/collections/counts/records",
-				data
-			)
-			return response.data.items
+			if (isRecordExist.items.length === 0) {
+				// No record found, create a new one
+				const response = await pb.collection("counts").create(data)
+				console.log("response", response)
+				return response // Return the response data
+			} else {
+				// Record found, update the existing one
+				const recordId = isRecordExist.items[0].id
+				const response = await pb.collection("counts").update(recordId, data)
+				console.log("response", response)
+				return response // Return the response data
+			}
 		} catch (error) {
-			console.log("Error details:", error)
-			return rejectWithValue(handleApiError(error))
+			console.log("Error details:", error.response?.data || error.message)
+			return rejectWithValue(error.response?.data || error.message)
 		}
 	}
 )

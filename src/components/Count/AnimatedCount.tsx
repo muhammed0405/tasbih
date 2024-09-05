@@ -28,7 +28,7 @@ const AnimatedCounter = ({ count }: { count: number }) => {
 	}, [count])
 
 	return (
-		<div className="text-5xl text-center w-full h-18 absolute  top-40	">
+		<div className="text-5xl text-center w-full h-18 	">
 			{digits.map((digit, index) => (
 				<AnimatedDigit key={index} digit={digit} />
 			))}
